@@ -1,6 +1,7 @@
-import { BookOpen, Calendar, MessageSquare, User } from 'lucide-react'
+import { Home, BookOpen, Calendar, MessageSquare, User } from 'lucide-react'
 
 const tabs = [
+  { key: 'Home', label: 'Home', icon: Home },
   { key: 'Courses', label: 'Courses', icon: BookOpen },
   { key: 'Schedule', label: 'Schedule', icon: Calendar },
   { key: 'Messages', label: 'Messages', icon: MessageSquare },
