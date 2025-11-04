@@ -1,26 +1,52 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
+import Navbar from './components/Navbar'
+import Courses, { courseData } from './components/Courses'
+import Scheduler from './components/Scheduler'
+import Messages from './components/Messages'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [tab, setTab] = useState('Courses')
+  const [selectedCourseId, setSelectedCourseId] = useState(null)
+
+  const orderedCourses = useMemo(() => {
+    if (!selectedCourseId) return courseData
+    const selected = courseData.find((c) => c.id === selectedCourseId)
+    const rest = courseData.filter((c) => c.id !== selectedCourseId)
+    return selected ? [selected, ...rest] : courseData
+  }, [selectedCourseId])
+
+  const handleSelectCourse = (course) => {
+    setSelectedCourseId(course.id)
+    setTab('Schedule')
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-lg">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">
-          Vibe Coding Platform
-        </h1>
-        <p className="text-gray-600 mb-6">
-          Your AI-powered development environment
-        </p>
-        <div className="text-center">
-          <button
-            onClick={() => setCount(count + 1)}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-          >
-            Count is {count}
-          </button>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-violet-50">
+      <Navbar currentTab={tab} onChangeTab={setTab} />
+
+      {tab === 'Courses' && <Courses onSelectCourse={handleSelectCourse} />}
+
+      {tab === 'Schedule' && (
+        <Scheduler
+          courses={orderedCourses}
+          onScheduled={() => {
+            setTab('Messages')
+          }}
+        />
+      )}
+
+      {tab === 'Messages' && <Messages />}
+
+      <footer className="mt-16 border-t border-gray-200">
+        <div className="max-w-6xl mx-auto px-4 py-8 text-sm text-gray-500 flex flex-col sm:flex-row items-center justify-between gap-2">
+          <div>© {new Date().getFullYear()} TutorLink. All rights reserved.</div>
+          <div className="flex items-center gap-4">
+            <a className="hover:text-gray-900" href="#">Privacy</a>
+            <a className="hover:text-gray-900" href="#">Terms</a>
+            <a className="hover:text-gray-900" href="#">Support</a>
+          </div>
         </div>
-      </div>
+      </footer>
     </div>
   )
 }
